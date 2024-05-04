@@ -1,0 +1,3 @@
+Scala provides predefined methods to deal with file. You can create, open, write and read file. Scala provides a complete package scala.io for file handling.
+
+

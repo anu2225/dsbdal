@@ -1,0 +1,45 @@
+import scala.io.Source
+
+object LogAnalytics1 {
+  def main(args: Array[String]): Unit = {
+    // Change the file path to your log file
+    val logFilePath = "sample.log"
+
+    // Read the log file and process it
+    val logData = Source.fromFile(logFilePath).getLines().toList
+
+    // Analyze the log data
+    analyzeLogData(logData)
+  }
+
+  def analyzeLogData(logData: List[String]): Unit = {
+    // (I) Display the count of 404 Response Codes
+    val count404 = logData.count(_.contains(" 404 "))
+
+    println(s"Count of 404 Response Codes: $count404")
+
+    // (II) Display the list of Top Twenty-five 404 Response Code Hosts
+    val hosts404 = logData.filter(_.contains(" 404 ")).map(_.split(" ")(0))
+    val top25Hosts404 = hosts404.groupBy(identity).mapValues(_.size).toList.sortBy(-_._2).take(25)
+
+    println("\nTop Twenty-five 404 Response Code Hosts:")
+    top25Hosts404.foreach { case (host, count) =>
+      println(s"$host - $count times")
+    }
+
+    // (III) Display the number of Unique Daily Hosts
+    val uniqueDailyHosts = logData.map(_.split(" ")(0)).distinct.length
+
+    println(s"\nNumber of Unique Daily Hosts: $uniqueDailyHosts")
+  }
+}
+
+
+//log file
+
+192.168.0.1 - - [25/Mar/2024:12:34:56 +0000] "GET /page1 HTTP/1.1" 200 1234
+192.168.0.2 - - [25/Mar/2024:12:35:01 +0000] "GET /page2 HTTP/1.1" 404 5678
+192.168.0.3 - - [25/Mar/2024:12:35:10 +0000] "GET /page3 HTTP/1.1" 404 9876
+192.168.0.4 - - [25/Mar/2024:12:36:22 +0000] "GET /page4 HTTP/1.1" 200 4321
+192.168.0.1 - - [25/Mar/2024:12:36:45 +0000] "GET /page5 HTTP/1.1" 404 8765
+192.168.0.2 - - [25/Mar/2024:12:37:05 +0000] "GET /page6 HTTP/1.1" 200 6789
