@@ -1,0 +1,21 @@
+//WordCount
+
+su
+password:
+cd DSBDL
+
+val inputFile = sc.textFile('word_count.txt')
+val counts = inputfile.flatMap(line => line.split(" ")).map(word=>(word,1)).reduceByKy(_+_);
+counts.toDebugString
+counts.cache
+counts.saveAsNewTextFile("word_count_out")
+
+
+
+out:
+
+su
+password:
+cd DSBDL
+cd word_count_out
+ls
